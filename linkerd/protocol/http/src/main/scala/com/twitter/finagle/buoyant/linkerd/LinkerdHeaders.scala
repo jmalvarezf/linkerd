@@ -315,7 +315,7 @@ object Headers {
         }.flatMap(TraceId.deserialize(_))
 
       def get(headers: HeaderMap): Option[TraceId] =
-        if (headers.contains(OpentracingSpanHeader)) {
+        if (headers.get(OpentracingTraceHeader).isDefined && headers.get(OpentracingParentHeader).isDefined && headers.get(OpentracingSpanHeader).isDefined && headers.get(OpentracingSampleHeader).isDefined && headers.get(OpentracingFlagsHeader).isDefined) {
           Some(TraceId.apply(SpanId.fromString(headers.get(OpentracingTraceHeader).get), SpanId.fromString(headers.get(OpentracingParentHeader).get), SpanId.fromString(headers.get(OpentracingSpanHeader).get).get, Some(if (headers.get(OpentracingSampleHeader).get.toInt == 1) true else false), Flags.apply(headers.get(OpentracingFlagsHeader).get.toInt)));
         } else {
           for {
